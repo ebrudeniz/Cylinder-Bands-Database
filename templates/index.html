@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cylinder Bands Database</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 90%;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        /* Quick Search */
+        .quick-search {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+        }
+        .quick-search h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .search-form {
+            display: flex;
+            gap: 10px;
+        }
+        .search-form input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .search-form input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .search-form button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .search-form button:hover {
+            background: #764ba2;
+        }
+        .search-hint {
+            font-size: 13px;
+            color: #999;
+            margin-top: 8px;
+        }
+        
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .menu-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 15px;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .menu-item h3 {
+            margin-bottom: 10px;
+        }
+        
+        .menu-item p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Cylinder Bands Database</h1>
+        <p class="subtitle">Rotogravure Printing Process Analysis System</p>
+        
+        <!-- Quick Search -->
+        <div class="quick-search">
+            <h3>🔍 Quick Search</h3>
+            <form action="/quick-search" method="GET" class="search-form">
+                <input type="text" name="q" placeholder="Search by Run ID or Customer name..." required>
+                <button type="submit">Search</button>
+            </form>
+            <p class="search-hint">Example: "123" or "kmart"</p>
+        </div>
+        
+        <div class="menu">
+            <a href="/runs" class="menu-item">
+                <h3>📋 View Runs</h3>
+                <p>Browse all production runs</p>
+            </a>
+            
+            <a href="/search" class="menu-item">
+                <h3>🔍 Search</h3>
+                <p>Search by attributes</p>
+            </a>
+            
+            <a href="/statistics" class="menu-item">
+                <h3>📊 Statistics</h3>
+                <p>View analytics</p>
+            </a>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number">534</div>
+                <div class="stat-label">Total Runs</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">37</div>
+                <div class="stat-label">Attributes</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Tables</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); }
+        h1 { color: #667eea; margin-bottom: 10px; }
+        .back-link { display: inline-block; color: #667eea; text-decoration: none; margin-bottom: 20px; }
+        .back-link:hover { text-decoration: underline; }
+        .info-box { background: #f8f9ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #667eea; }
+        .info-box strong { color: #667eea; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+        th { background: #667eea; color: white; font-weight: 600; }
+        tr:hover { background: #f8f9ff; }
+        .no-results { text-align: center; padding: 40px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/search" class="back-link">← Back to Search</a>
+        <h1>📊 Search Results</h1>
+        
+        <div class="info-box">
+            <strong>Column:</strong> {{ column_name }} | 
+            <strong>Results:</strong> {{ results|length }} records found
+            {% if search_type == 'numeric' %}
+            | <strong>Type:</strong> Numeric Search
+            {% else %}
+            | <strong>Type:</strong> String Search
+            {% endif %}
+        </div>
+        
+        {% if results %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Run ID</th>
+                    <th>Timestamp</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                <tr>
+                    <td><a href="/run/{{ result.run_id }}" style="color: #667eea; text-decoration: none;">{{ result.run_id }}</a></td>
+                    <td>{{ result.timestamp }}</td>
+                    <td>{{ result.value }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="no-results">
+            <h2>No results found</h2>
+            <p>Try adjusting your search criteria</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

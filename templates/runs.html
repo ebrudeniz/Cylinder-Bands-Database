@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Runs</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); }
+        h1 { color: #667eea; margin-bottom: 10px; }
+        .back-link { display: inline-block; color: #667eea; text-decoration: none; margin-bottom: 20px; }
+        .back-link:hover { text-decoration: underline; }
+        
+        /* Filters */
+        .filters {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+        }
+        .filters h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-group label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .filter-group input,
+        .filter-group select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            grid-column: 1 / -1;
+            margin-top: 10px;
+        }
+        .btn-filter {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .btn-filter:hover {
+            background: #764ba2;
+        }
+        .btn-clear {
+            background: #e0e0e0;
+            color: #666;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .btn-clear:hover {
+            background: #ccc;
+        }
+        
+        .results-info {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+        th { background: #667eea; color: white; font-weight: 600; }
+        tr:hover { background: #f8f9ff; }
+        .view-btn { background: #667eea; color: white; padding: 8px 16px; border-radius: 5px; text-decoration: none; font-size: 14px; }
+        .view-btn:hover { background: #764ba2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Home</a>
+        <h1>📋 Production Runs</h1>
+        
+        <!-- Advanced Filters -->
+        <div class="filters">
+            <h3>🔍 Advanced Filters</h3>
+            <form method="GET" action="/runs" class="filter-form">
+                <div class="filter-group">
+                    <label>Date From:</label>
+                    <input type="date" name="date_from" value="{{ filters.date_from }}">
+                </div>
+                
+                <div class="filter-group">
+                    <label>Date To:</label>
+                    <input type="date" name="date_to" value="{{ filters.date_to }}">
+                </div>
+                
+                <div class="filter-group">
+                    <label>Customer:</label>
+                    <input type="text" name="customer" placeholder="Search customer..." value="{{ filters.customer }}">
+                </div>
+                
+                <div class="filter-group">
+                    <label>Band Type:</label>
+                    <select name="band_type">
+                        <option value="">All</option>
+                        <option value="band" {% if filters.band_type == 'band' %}selected{% endif %}>Band</option>
+                        <option value="noband" {% if filters.band_type == 'noband' %}selected{% endif %}>No Band</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Sort By:</label>
+                    <select name="sort_by">
+                        <option value="run_id" {% if filters.sort_by == 'run_id' %}selected{% endif %}>Run ID</option>
+                        <option value="timestamp" {% if filters.sort_by == 'timestamp' %}selected{% endif %}>Date</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Order:</label>
+                    <select name="sort_order">
+                        <option value="DESC" {% if filters.sort_order == 'DESC' %}selected{% endif %}>Descending</option>
+                        <option value="ASC" {% if filters.sort_order == 'ASC' %}selected{% endif %}>Ascending</option>
+                    </select>
+                </div>
+                
+                <div class="filter-actions">
+                    <button type="submit" class="btn-filter">Apply Filters</button>
+                    <a href="/runs" class="btn-clear">Clear Filters</a>
+                </div>
+            </form>
+        </div>
+        
+        <p class="results-info">Showing {{ runs|length }} runs</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Run ID</th>
+                    <th>Timestamp</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for run in runs %}
+                <tr>
+                    <td>{{ run.run_id }}</td>
+                    <td>{{ run.timestamp }}</td>
+                    <td>
+                        <a href="/run/{{ run.run_id }}" class="view-btn">View Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        {% if runs|length == 0 %}
+        <div style="text-align: center; padding: 40px; color: #999;">
+            <h2>No runs found</h2>
+            <p>Try adjusting your filters</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

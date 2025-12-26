@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); 
+        }
+        h1 { color: #667eea; margin-bottom: 30px; }
+        .back-link { 
+            display: inline-block; 
+            color: #667eea; 
+            text-decoration: none; 
+            margin-bottom: 20px; 
+            font-weight: 600;
+        }
+        .back-link:hover { text-decoration: underline; }
+        
+        /* Overview Cards */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .overview-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        .overview-card h3 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        .overview-card p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* Chart Grid */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .chart-container {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container h2 {
+            color: #764ba2;
+            margin-bottom: 20px;
+            font-size: 20px;
+            text-align: center;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+        
+        /* Tables */
+        .table-section {
+            margin-bottom: 40px;
+        }
+        .table-section h2 {
+            color: #764ba2;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: #f8f9ff;
+        }
+        
+        /* Numeric Stats Grid */
+        .numeric-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .stat-box {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+        .stat-box h3 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        .stat-box p {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Home</a>
+        <h1>📊 Database Statistics & Analytics</h1>
+        
+        <!-- Overview Cards -->
+        <div class="overview-grid">
+            <div class="overview-card">
+                <h3>{{ total_runs }}</h3>
+                <p>Total Production Runs</p>
+            </div>
+            <div class="overview-card">
+                <h3>{{ band_percentage }}%</h3>
+                <p>Band Defect Rate</p>
+            </div>
+            <div class="overview-card">
+                <h3>{{ top_cylinder.cylinder if top_cylinder else 'N/A' }}</h3>
+                <p>Most Used Cylinder</p>
+            </div>
+            <div class="overview-card">
+                <h3>{{ top_cylinder.count if top_cylinder else 0 }}</h3>
+                <p>Times Used</p>
+            </div>
+        </div>
+        
+        <!-- Charts Grid -->
+        <div class="chart-grid">
+            <!-- Band Type Pie Chart -->
+            <div class="chart-container">
+                <h2>🎯 Band Type Distribution</h2>
+                <div class="chart-wrapper">
+                    <canvas id="bandChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Top Customers Bar Chart -->
+            <div class="chart-container">
+                <h2>👥 Top 10 Customers</h2>
+                <div class="chart-wrapper">
+                    <canvas id="customerChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Ink Type Pie Chart -->
+            <div class="chart-container">
+                <h2>🎨 Ink Type Distribution</h2>
+                <div class="chart-wrapper">
+                    <canvas id="inkChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Press Usage Pie Chart -->
+            <div class="chart-container">
+                <h2>🏭 Press Machine Usage</h2>
+                <div class="chart-wrapper">
+                    <canvas id="pressChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Numeric Statistics -->
+        <div class="table-section">
+            <h2>🔢 Average Process Parameters</h2>
+        </div>
+        <div class="numeric-stats">
+            <div class="stat-box">
+                <h3>{{ "%.1f"|format(numeric_stats.avg_proof_cut) if numeric_stats.avg_proof_cut else 'N/A' }}</h3>
+                <p>Avg Proof Cut</p>
+            </div>
+            <div class="stat-box">
+                <h3>{{ "%.1f"|format(numeric_stats.avg_viscosity) if numeric_stats.avg_viscosity else 'N/A' }}</h3>
+                <p>Avg Viscosity</p>
+            </div>
+            <div class="stat-box">
+                <h3>{{ "%.2f"|format(numeric_stats.avg_wax) if numeric_stats.avg_wax else 'N/A' }}</h3>
+                <p>Avg Wax</p>
+            </div>
+            <div class="stat-box">
+                <h3>{{ "%.2f"|format(numeric_stats.avg_hardener) if numeric_stats.avg_hardener else 'N/A' }}</h3>
+                <p>Avg Hardener</p>
+            </div>
+        </div>
+        
+        <!-- Top Customers Table -->
+        <div class="table-section">
+            <h2>📋 Customer Details</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Customer</th>
+                        <th>Number of Runs</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in top_customers %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ item.customer }}</td>
+                        <td>{{ item.count }}</td>
+                        <td>{{ "%.1f"|format((item.count / total_runs) * 100) }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        // Band Type Pie Chart
+        const bandCtx = document.getElementById('bandChart').getContext('2d');
+        new Chart(bandCtx, {
+            type: 'pie',
+            data: {
+                labels: [{% for item in band_distribution %}'{{ item.string_value }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    data: [{% for item in band_distribution %}{{ item.count }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+        
+        // Top Customers Bar Chart
+        const customerCtx = document.getElementById('customerChart').getContext('2d');
+        new Chart(customerCtx, {
+            type: 'bar',
+            data: {
+                labels: [{% for item in top_customers %}'{{ item.customer }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Number of Runs',
+                    data: [{% for item in top_customers %}{{ item.count }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: '#667eea'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+        
+        // Ink Type Pie Chart
+        const inkCtx = document.getElementById('inkChart').getContext('2d');
+        new Chart(inkCtx, {
+            type: 'pie',
+            data: {
+                labels: [{% for item in ink_distribution %}'{{ item.ink_type }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    data: [{% for item in ink_distribution %}{{ item.count }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+        
+        // Press Usage Pie Chart
+        const pressCtx = document.getElementById('pressChart').getContext('2d');
+        new Chart(pressCtx, {
+            type: 'pie',
+            data: {
+                labels: [{% for item in press_distribution %}'Press {{ item.press }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    data: [{% for item in press_distribution %}{{ item.count }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: ['#667eea', '#764ba2', '#ff6384', '#36a2eb', '#ffce56']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
