@@ -35,3 +35,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+colnames
+deleted.py
+SQL_queries/
