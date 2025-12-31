@@ -13,7 +13,7 @@ This project implements a **Metadata-Driven EAV (Entity-Attribute-Value) Model**
 - **Advanced Filtering** and search capabilities
 - **Statistical Analysis** with Chart.js visualizations
 - **Quick Search** functionality
-- **534 production runs** with 37 attributes
+- **539 production runs** with 37 attributes
 
 ## 🗄️ Database Structure
 
