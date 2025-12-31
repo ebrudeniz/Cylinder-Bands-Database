@@ -60,8 +60,6 @@ def load_and_clean_csv(filepath):
         'scandanavian': 'scandinavian'
     })
     
-    # Duplicate'leri sil
-    df = df.drop_duplicates(subset=['timestamp', 'cylinder_number'], keep='first')
     
     print(f"✓ Temizleme tamamlandı. Toplam kayıt: {len(df)}")
 
