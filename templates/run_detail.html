@@ -1,10 +1,9 @@
-cat > run_detail.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Run Details - {{ run_id }}</title>
+    <title>Run Details</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; padding: 20px; }
@@ -12,43 +11,43 @@ cat > run_detail.html << 'HTMLEOF'
         h1 { color: #667eea; margin-bottom: 30px; }
         .back-link { display: inline-block; color: #667eea; text-decoration: none; margin-bottom: 20px; }
         .back-link:hover { text-decoration: underline; }
-        .data-section { margin-bottom: 40px; }
-        .data-section h2 { color: #764ba2; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
-        .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; margin-top: 20px; }
-        .data-item { background: #f8f9ff; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea; }
-        .data-label { font-weight: 600; color: #666; font-size: 14px; margin-bottom: 5px; }
-        .data-value { color: #333; font-size: 16px; }
-        .data-value.null { color: #999; font-style: italic; }
+        .info-box { background: #f8f9ff; padding: 15px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #667eea; }
+        .section { margin-bottom: 40px; }
+        .section h2 { color: #764ba2; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
+        .attribute-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .attribute-item { background: #f8f9ff; padding: 15px; border-radius: 8px; border-left: 3px solid #667eea; }
+        .attribute-name { font-weight: 600; color: #666; font-size: 14px; margin-bottom: 5px; }
+        .attribute-value { color: #333; font-size: 16px; }
     </style>
 </head>
 <body>
     <div class="container">
         <a href="/runs" class="back-link">← Back to Runs</a>
-        <h1>🔍 Run Details - ID: {{ run_id }}</h1>
+        <h1>🔍 Run Details - ID: {{ run.run_id }}</h1>
         
-        <div class="data-section">
+        <div class="info-box">
+            <strong>Timestamp:</strong> {{ run.timestamp }}
+        </div>
+        
+        <div class="section">
             <h2>📝 String Attributes</h2>
-            <div class="data-grid">
-                {% for item in string_data %}
-                <div class="data-item">
-                    <div class="data-label">{{ item.column_name }}</div>
-                    <div class="data-value {% if not item.string_value %}null{% endif %}">
-                        {{ item.string_value if item.string_value else 'NULL' }}
-                    </div>
+            <div class="attribute-grid">
+                {% for attr in string_attributes %}
+                <div class="attribute-item">
+                    <div class="attribute-name">{{ attr.column_name }}</div>
+                    <div class="attribute-value">{{ attr.string_value if attr.string_value else 'N/A' }}</div>
                 </div>
                 {% endfor %}
             </div>
         </div>
         
-        <div class="data-section">
+        <div class="section">
             <h2>🔢 Numeric Attributes</h2>
-            <div class="data-grid">
-                {% for item in numeric_data %}
-                <div class="data-item">
-                    <div class="data-label">{{ item.column_name }}</div>
-                    <div class="data-value {% if not item.numeric_value %}null{% endif %}">
-                        {{ item.numeric_value if item.numeric_value else 'NULL' }}
-                    </div>
+            <div class="attribute-grid">
+                {% for attr in numeric_attributes %}
+                <div class="attribute-item">
+                    <div class="attribute-name">{{ attr.column_name }}</div>
+                    <div class="attribute-value">{{ "%.2f"|format(attr.numeric_value) if attr.numeric_value else 'N/A' }}</div>
                 </div>
                 {% endfor %}
             </div>
@@ -56,4 +55,3 @@ cat > run_detail.html << 'HTMLEOF'
     </div>
 </body>
 </html>
-HTMLEOF
